@@ -3,6 +3,8 @@ package com.srv.send;
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.fileQueu.ReadHandler;
 
+import java.io.File;
+
 public class SendDataReadThread implements Runnable {
 
 
@@ -38,7 +40,11 @@ public class SendDataReadThread implements Runnable {
 
                 fileQueuMain.getFileQueu().dataHandler(readHandler);
 
-                //System.out.println(readHandler.get());
+                File file = readHandler.getFile();
+
+                String fileName = file.getName();
+
+                fileQueuMain.getFileQueu().fileWrite("/home/dextop/data/result/"+fileName, false, name, (String)readHandler.get());
 
                 Thread.sleep(100);
             }catch (Exception e){

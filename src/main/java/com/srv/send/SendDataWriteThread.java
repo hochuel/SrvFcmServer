@@ -48,7 +48,7 @@ public class SendDataWriteThread implements Runnable {
                     jsonString += jsonObject.toJSONString()+"\r\n";
                 }
 
-                fileQueuMain.getFileQueu().fileWrite("", name, jsonString);
+                fileQueuMain.getFileQueu().fileWrite("", true, name, jsonString);
 
                 Thread.sleep(1000);
 

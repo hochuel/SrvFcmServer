@@ -16,18 +16,7 @@ import java.util.List;
 
 public class FcmSendProcess {
 
-
-    @Autowired
-    private FileQueuMain fileQueuMain;
-
-
     private FirebaseApp app01 = null;
-
-
-    public FileQueuMain getFileQueuMain() {
-
-        return fileQueuMain;
-    }
 
     public void appReset(){
         InputStream serviceAccount = null;

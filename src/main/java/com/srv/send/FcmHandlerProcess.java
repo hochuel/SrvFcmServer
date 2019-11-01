@@ -15,18 +15,23 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class FcmHandlerProcess implements ReadHandler {
 
-
-
-    @Autowired
-    private FileQueuMain fileQueuMain;
 
     private FcmSendProcess fcmSendProcess = null;
     private Object resultObj = null;
 
     private String prifix = "";
+
+    private File file;
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 
     public FcmHandlerProcess(FcmSendProcess fcmSendProcess, String prifix){
         this.fcmSendProcess = fcmSendProcess;
@@ -90,13 +95,9 @@ public class FcmHandlerProcess implements ReadHandler {
                 //System.out.println(jsonObject.toJSONString());
             }
 
-            try {
-                fileQueuMain.getFileQueu().fileWrite("/home/dextop/data/result/", prifix, resultStr);
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
 
-
+            resultObj = resultStr;
+            setFile(file);
 
             file.delete();
 
