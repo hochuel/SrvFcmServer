@@ -29,6 +29,8 @@ public class FcmSend {
 
     }
 */
+
+    private FirebaseApp app01 = null;
     public FcmSend(){
 
 
@@ -40,7 +42,7 @@ public class FcmSend {
             options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
-            FirebaseApp.initializeApp(options);
+            app01 = FirebaseApp.initializeApp(options, "app01");
         } catch (FileNotFoundException e) {
             System.out.println("Firebase ServiceAccountKey FileNotFoundException" + e.getMessage());
         } catch (IOException e) {
@@ -71,33 +73,37 @@ public class FcmSend {
         );
 
 
-/*
+        System.out.println("\r\nOne message send ##################################################");
         // See documentation on defining a message payload.
-        Message message = Message.builder()
+        Message message01 = Message.builder()
                 .putData("score", "850")
                 .putData("time", "2:45")
-                setToken(registrationToken)
+                .setToken("dX3ZyKWUvh8:APA91bEIyzm8lg1HF4paL15knXld0wnY66dFyhlW5YKVuyUIQQzvmh1enrakV2idUDiJZdliTcwqyvlvdTBd-uGmLWO5-b4DgmcPydqjsEYorSXarksxvRmWA-SYWOp_M-m5Tnr5HOl3")
                 .build();
         try {
             // Send a message to the device corresponding to the provided
             // registration token.
-            String response = FirebaseMessaging.getInstance().send(message);
+
+
+            System.out.println(message01);
+
+            String response = FirebaseMessaging.getInstance(app01).send(message01);
             // Response is a message ID string.
             System.out.println("Successfully sent message: " + response);
         }catch(FirebaseMessagingException fex){
             fex.printStackTrace();
         }
-*/
 
 
 
+        System.out.println("\r\nList message send ##################################################");
         MulticastMessage message = MulticastMessage.builder()
                 .putData("score", "850")
                 .putData("time", "2:45")
                 .addAllTokens(registrationTokens)
                 .build();
         try {
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            BatchResponse response = FirebaseMessaging.getInstance(app01).sendMulticast(message);
 // See the BatchResponse reference documentation
 // for the contents of response.
 
@@ -114,7 +120,7 @@ public class FcmSend {
             ex.printStackTrace();
         }
 
-
+        System.out.println("\r\nSend All message send ##################################################");
         // Create a list containing up to 500 messages.
         List<Message> messages = Arrays.asList(
                 Message.builder()
@@ -128,7 +134,7 @@ public class FcmSend {
                         .build()
         );
         try {
-            BatchResponse response = FirebaseMessaging.getInstance().sendAll(messages);
+            BatchResponse response = FirebaseMessaging.getInstance(app01).sendAll(messages);
         // See the BatchResponse reference documentation
         // for the contents of response.
             System.out.println(response.getSuccessCount() + " messages were sent successfully");
