@@ -6,6 +6,11 @@ public class ReadHandlerProcess implements ReadHandler{
 
     private File file = null;
 
+    @Override
+    public File getFile() {
+        return file;
+    }
+
     private Object resultObj = null;
 
     @Override

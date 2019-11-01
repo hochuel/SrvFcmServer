@@ -13,4 +13,6 @@ public interface ReadHandler {
     public Object get();
 
     public void fileDelete();
+
+    public File getFile();
 }

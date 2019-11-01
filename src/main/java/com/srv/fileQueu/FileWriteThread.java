@@ -45,7 +45,7 @@ public class FileWriteThread implements Runnable {
                 }
 
 
-                fileQueuMain.getFileQueu().fileWrite("", name, str);
+                fileQueuMain.getFileQueu().fileWrite("", true, name, str);
 
                 Thread.sleep(1000);
 

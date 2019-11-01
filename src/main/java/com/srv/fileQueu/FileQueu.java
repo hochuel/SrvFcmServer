@@ -37,17 +37,18 @@ public class FileQueu {
         return filePath;
     }
 
-    public void fileWrite(String filePath, String prifix, String str) throws IOException, InterruptedException {
+    public void fileWrite(String filePath, boolean gubun, String prifix, String str) throws IOException, InterruptedException {
         RandomAccessFile rf = null;
-
         FileChannel channel = null;
-
+        String fileName = "";
 
         if(filePath == null || "".equals(filePath)){
-            filePath = getFilePath();
+            fileName = filePath + prifix + "_srv."+getDate("yyyyMMddhhmmssSSS");
+        }else{
+            fileName = filePath;
         }
 
-        String fileName = filePath + prifix + "_srv."+getDate("yyyyMMddhhmmssSSS");
+
 
         File file = new File(fileName);
         file.createNewFile();
@@ -65,7 +66,9 @@ public class FileQueu {
 
         //System.out.println(fileName +" Create File...");
 
-        deque.put(file);
+        if(gubun) {
+            deque.put(file);
+        }
 
     }
 
