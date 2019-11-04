@@ -47,7 +47,7 @@ public class SendDataWriteThread implements Runnable {
 
                     int index = atomicCustom.getIntData();
 
-                    if(index > 1000000){
+                    if(index > 100000){
                         startThread = false;
                     }
 

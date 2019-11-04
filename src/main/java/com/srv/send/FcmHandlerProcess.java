@@ -95,7 +95,7 @@ public class FcmHandlerProcess implements ReadHandler {
             }
             long endTime = System.currentTimeMillis();
 
-            final String str = file.getAbsolutePath() + ": cnt :" + index +": "+ (endTime - startTime) +"ms";
+            //final String str = file.getAbsolutePath() + ": cnt :" + index +": "+ (endTime - startTime) +"ms";
 
             final JSONObject object = new JSONObject();
             object.put("cnt", index);
