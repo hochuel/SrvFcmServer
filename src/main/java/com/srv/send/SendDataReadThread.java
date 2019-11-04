@@ -42,9 +42,9 @@ public class SendDataReadThread implements Runnable {
 
                 File file = readHandler.getFile();
 
-                String fileName = file.getName();
+                String fileName = "/home/dextop/data/result/" + file.getName();
 
-                fileQueuMain.getFileQueu().fileWrite("/home/dextop/data/result/"+fileName, false, name, (String)readHandler.get());
+                fileQueuMain.getFileQueu().fileWrite(fileName, false, name, (String)readHandler.get());
 
                 Thread.sleep(100);
             }catch (Exception e){

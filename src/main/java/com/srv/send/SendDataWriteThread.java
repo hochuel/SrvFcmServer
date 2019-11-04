@@ -1,9 +1,9 @@
 package com.srv.send;
 
 import com.srv.fileQueu.FileQueuMain;
+import com.srv.util.AtomicCustom;
 import org.json.simple.JSONObject;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SendDataWriteThread implements Runnable {
 
@@ -19,12 +19,12 @@ public class SendDataWriteThread implements Runnable {
 
     private String name;
 
-    private AtomicInteger atomicInteger = null;
+    @Autowired
+    private AtomicCustom atomicCustom;
 
     public SendDataWriteThread(FileQueuMain fileQueuMain){
 
         this.fileQueuMain = fileQueuMain;
-        this.atomicInteger = new AtomicInteger(0);
     }
 
 
@@ -32,14 +32,19 @@ public class SendDataWriteThread implements Runnable {
     @Override
     public void run() {
 
-        while(true){
+        boolean startThread = true;
+        while(startThread){
             try {
 
                 String jsonString = "";
-                for(int i = 0; i < 10; i++) {
+                for(int i = 0; i < 100; i++) {
                     JSONObject jsonObject = new JSONObject();
 
-                    int index = atomicInteger.incrementAndGet();
+                    int index = atomicCustom.getIntData();
+
+                    if(index > 10000){
+                        startThread = false;
+                    }
 
                     jsonObject.put("title", "Test title[" + index + "]");
                     jsonObject.put("body", "Test Body[" + index + "]");

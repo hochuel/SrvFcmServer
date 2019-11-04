@@ -9,6 +9,7 @@
     http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
 
+    <context:component-scan base-package="com.srv"/>
 
     <bean id="fcmSendProcess" class="com.srv.send.FcmSendProcess"/>
 
@@ -22,5 +23,7 @@
         <constructor-arg ref="fileQueuMain"/>
     </bean>
 
+
+    <bean id="atomicCustom" class="com.srv.util.AtomicCustom"/>
 
 </beans>
