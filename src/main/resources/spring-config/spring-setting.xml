@@ -11,6 +11,8 @@
 
     <context:component-scan base-package="com.srv"/>
 
+    <import resource="properties.xml"/>
+
     <bean id="fcmSendProcess" class="com.srv.send.FcmSendProcess"/>
 
     <bean id="fileQueuMain" class="com.srv.fileQueu.FileQueuMain"/>
@@ -25,5 +27,8 @@
 
 
     <bean id="atomicCustom" class="com.srv.util.AtomicCustom"/>
+
+
+
 
 </beans>
