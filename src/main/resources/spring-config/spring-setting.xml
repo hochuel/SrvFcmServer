@@ -28,6 +28,8 @@
 
     <bean id="atomicCustom" class="com.srv.util.AtomicCustom"/>
 
+    <bean id="monitorApp" class="com.srv.MonitorApp"/>
+
 
 
 
