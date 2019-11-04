@@ -2,7 +2,6 @@ package com.srv.fileQueu;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FilqueuTestApp {
 
@@ -16,11 +15,9 @@ public class FilqueuTestApp {
 
         FileQueuMain fileQueuMain = new FileQueuMain();
 
-        AtomicInteger atomicInteger = new AtomicInteger(0);
-
         FileWriteThread[] fwt = new FileWriteThread[writeThreadCnt];
         for(int i = 0; i < writeThreadCnt; i++) {
-            fwt[i] = new FileWriteThread(fileQueuMain, atomicInteger);
+            fwt[i] = new FileWriteThread(fileQueuMain);
             fwt[i].setName("Thread_"+i);
             writeExecutorService.execute(fwt[i]);
         }

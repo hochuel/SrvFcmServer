@@ -6,6 +6,7 @@ import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.fileQueu.ReadHandler;
+import com.srv.util.FileUtil;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,9 +75,9 @@ public class FcmHandlerProcess implements ReadHandler {
                     ex.printStackTrace();
                 }
             }
+            long startTime = System.currentTimeMillis();
 
             BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, "");
-            //System.out.println(batchResponse.getSuccessCount() + " messages were sent successfully");
 
             List<SendResponse> resultList = batchResponse.getResponses();
             int index = 0;
@@ -91,15 +92,33 @@ public class FcmHandlerProcess implements ReadHandler {
 
                 resultStr += jsonObject.toJSONString()+"\r\n";
 
-                //System.out.println(resultStr);
-                //System.out.println(jsonObject.toJSONString());
             }
+            long endTime = System.currentTimeMillis();
+
+            final String str = file.getAbsolutePath() + ": cnt :" + index +": "+ (endTime - startTime) +"ms";
+
+            final JSONObject object = new JSONObject();
+            object.put("cnt", index);
+            object.put("time", (endTime - startTime));
+
+
+            final String monitorFileName = file.getAbsolutePath().replaceAll("/data/", "/data/monitor/");
+
+
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        FileUtil.fileWrite(monitorFileName, object.toJSONString());
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
 
             resultObj = resultStr;
             setFile(file);
-
-            file.delete();
 
         }catch(IOException ex){
             ex.printStackTrace();

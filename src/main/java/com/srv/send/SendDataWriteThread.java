@@ -2,10 +2,18 @@ package com.srv.send;
 
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.util.AtomicCustom;
+import com.srv.util.DateUtil;
+import com.srv.util.PropertyService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SendDataWriteThread implements Runnable {
+
+    @Autowired
+    private PropertyService propertyService;
+
+    @Autowired
+    private AtomicCustom atomicCustom;
 
     private FileQueuMain fileQueuMain;
 
@@ -18,9 +26,6 @@ public class SendDataWriteThread implements Runnable {
     }
 
     private String name;
-
-    @Autowired
-    private AtomicCustom atomicCustom;
 
     public SendDataWriteThread(FileQueuMain fileQueuMain){
 
@@ -42,7 +47,7 @@ public class SendDataWriteThread implements Runnable {
 
                     int index = atomicCustom.getIntData();
 
-                    if(index > 10000){
+                    if(index > 1000000){
                         startThread = false;
                     }
 
@@ -53,7 +58,12 @@ public class SendDataWriteThread implements Runnable {
                     jsonString += jsonObject.toJSONString()+"\r\n";
                 }
 
-                fileQueuMain.getFileQueu().fileWrite("", true, name, jsonString);
+                String fileName = propertyService.getString("file.send")+"/"+name+"S"+DateUtil.getDate("yyyyMMddhhmmssSSS");
+
+                //System.out.println(fileName);
+
+
+                fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
 
                 Thread.sleep(1000);
 

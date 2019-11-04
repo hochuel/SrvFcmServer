@@ -1,5 +1,7 @@
 package com.srv.fileQueu;
 
+import com.srv.util.FileUtil;
+
 import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -31,29 +33,16 @@ public class FileQueu {
         this.readHandler = readHandler;
     }
 
-    private final String filePath = "/home/dextop/data/";
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void fileWrite(String filePath, boolean gubun, String prifix, String str) throws IOException, InterruptedException {
+    public void fileWrite(String fileName, boolean gubun, String prifix, String str) throws IOException, InterruptedException {
+        /*
         RandomAccessFile rf = null;
         FileChannel channel = null;
-        String fileName = "";
-
-        if(filePath == null || "".equals(filePath)){
-            fileName = filePath + prifix + "_srv."+getDate("yyyyMMddhhmmssSSS");
-        }else{
-            fileName = filePath;
-        }
-
-
 
         File file = new File(fileName);
         file.createNewFile();
 
-        rf = new RandomAccessFile(fileName, "rw");
+        rf = new RandomAccessFile(file, "rw");
         channel = rf.getChannel();
 
         MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, str.length());
@@ -69,57 +58,22 @@ public class FileQueu {
         if(gubun) {
             deque.put(file);
         }
+        */
+        File file = FileUtil.fileWrite(fileName, str);
+
+
+        if(gubun){
+            deque.put(file);
+        }
+
 
     }
 
-    public void fileObjectWrite(String prifix, Object object) throws IOException, InterruptedException {
-
-        OutputStream outputStream = null;
-        BufferedOutputStream bufferedOutputStream = null;
-        ObjectOutputStream objectOutputStream = null;
-
-        String fileName = filePath + prifix + "_srv."+getDate("yyyyMMddhhmmssSSS");
-
-        File file = new File(fileName);
-        file.createNewFile();
-
-        outputStream = new FileOutputStream(file);
-        bufferedOutputStream = new BufferedOutputStream(outputStream);
-        objectOutputStream = new ObjectOutputStream(bufferedOutputStream);
-
-        objectOutputStream.writeObject(object);
-
-        objectOutputStream.close();
-        bufferedOutputStream.close();
-        outputStream.close();
-
-        deque.put(file);
-
-    }
-
-    public void fileObjectRead(File file, ReadHandler readHandler) throws Exception, IOException{
-        InputStream inputStream = null;
-        BufferedInputStream bufferedInputStream = null;
-        ObjectInputStream objectInputStream = null;
-
-        inputStream = new FileInputStream(file);
-        bufferedInputStream = new BufferedInputStream(inputStream);
-        objectInputStream = new ObjectInputStream(bufferedInputStream);
-
-        Object object = objectInputStream.readObject();
-
-        readHandler.setHandler(object, file);
-
-        objectInputStream.close();
-        bufferedInputStream.close();
-        inputStream.close();
-
-        file.delete();
-    }
 
 
-    public void fileRead(String threadName, File file, ReadHandler readHandler) throws IOException{
 
+    public void fileRead(File file, ReadHandler readHandler) throws IOException{
+/*
         RandomAccessFile rf = null;
         FileChannel channel = null;
 
@@ -140,24 +94,11 @@ public class FileQueu {
             readHandler.setHandler(data, file);
 
         }
-
+*/
+        byte[] data = FileUtil.fileRead(file);
+        readHandler.setHandler(data, file);
     }
 
-
-    public void fileRead(File file, ReadHandler readHandler) throws IOException{
-        fileRead("", file, readHandler);
-    }
-
-    public String getDate(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
-        return dateFormat.format(new Date(System.currentTimeMillis()));
-    }
-
-
-    public String getDate(String format){
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        return dateFormat.format(new Date(System.currentTimeMillis()));
-    }
 
 
     public void dataHandler(ReadHandler readHandler){
@@ -166,7 +107,7 @@ public class FileQueu {
         try{
             File file = (File)deque.take();
             if(file != null && file.isFile()) {
-                System.out.println("File read file.getAbsolutePath() :" + file.getAbsolutePath());
+                //System.out.println("File read file.getAbsolutePath() :" + file.getAbsolutePath());
                 fileRead(file, readHandler);
 
             }

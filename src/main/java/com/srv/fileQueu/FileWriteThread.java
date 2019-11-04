@@ -1,6 +1,9 @@
 package com.srv.fileQueu;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import com.srv.util.AtomicCustom;
+import com.srv.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 public class FileWriteThread implements Runnable {
 
@@ -9,7 +12,8 @@ public class FileWriteThread implements Runnable {
 
     private String name;
 
-    private AtomicInteger atomicInteger = null;
+    @Autowired
+    private AtomicCustom atomicCustom;
 
     public String getName() {
         return name;
@@ -19,11 +23,10 @@ public class FileWriteThread implements Runnable {
         this.name = name;
     }
 
-    public FileWriteThread(FileQueuMain fileQueuMain, AtomicInteger atomicInteger){
+    public FileWriteThread(FileQueuMain fileQueuMain){
 
         this.fileQueuMain = fileQueuMain;
 
-        this.atomicInteger = atomicInteger;
     }
 
 
@@ -31,17 +34,20 @@ public class FileWriteThread implements Runnable {
 
     public void run(){
 
-        int index = 0;
-        while(true){
+        boolean startThread = true;
+        while(startThread){
             try {
 
                 String str = "";
-                for(int i = 0; i < 10; i++){
+                for(int i = 0; i < 100; i++){
 
+                    int index = atomicCustom.getIntData();
+                    if(index > 10000){
+                        startThread = false;
+                    }
 
-                    str += this.name + "::" + fileQueuMain.getFileQueu().getDate()+ " test file data+["+atomicInteger.incrementAndGet()+"] \r\n";
+                    str += this.name + "::" + DateUtil.getDate() + " test file data+["+index+"] \r\n";
 
-                    index ++;
                 }
 
 

@@ -100,7 +100,7 @@ public class FcmSendProcess {
 
     public BatchResponse sendAllMessage(List<Message> messages, String appName){
         BatchResponse response = null;
-        System.out.println("\r\nSend All message send ##################################################");
+        //System.out.println("\r\nSend All message send ##################################################");
         // Create a list containing up to 500 messages.
         /*
         List<Message> messages = Arrays.asList(

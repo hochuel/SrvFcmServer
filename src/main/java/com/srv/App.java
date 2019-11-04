@@ -14,15 +14,15 @@ public class App {
     public static void main(String[] args){
 
 
-        int writeThreadCnt = 2;
-        int readThreadCnt = 2;
+        int writeThreadCnt = 6;
+        int readThreadCnt = 6;
+
+        int monitorThreadCnt = 1;
 
         ExecutorService writeExecutorService = Executors.newFixedThreadPool(writeThreadCnt);
         ExecutorService readExecutorService = Executors.newFixedThreadPool(readThreadCnt);
 
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-config/spring-setting.xml");
-        //HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
-        //obj.getMessage();
 
 
         /*##################### Fcm App Reset ########################*/
@@ -33,7 +33,7 @@ public class App {
         SendDataWriteThread[] sendDataWriteThread = new SendDataWriteThread[writeThreadCnt];
         for(int i = 0; i < writeThreadCnt; i++) {
             sendDataWriteThread[i] = (SendDataWriteThread)context.getBean("writeThread");
-            sendDataWriteThread[i].setName("Thread_"+i);
+            sendDataWriteThread[i].setName("T_"+i);
             writeExecutorService.execute(sendDataWriteThread[i]);
         }
 
@@ -42,12 +42,14 @@ public class App {
         for(int i = 0; i < readThreadCnt; i++) {
             sendDataReadThreads[i] = (SendDataReadThread)context.getBean("readThread");
             sendDataReadThreads[i].setFcmSendProcess(fcmSendProcess);
-            sendDataReadThreads[i].setName("Thread_"+i);
+            sendDataReadThreads[i].setName("T_"+i);
             readExecutorService.execute(sendDataReadThreads[i]);
         }
 
+        ExecutorService monitorService = Executors.newFixedThreadPool(monitorThreadCnt);
+        MonitorApp monitorApp = (MonitorApp)context.getBean("monitorApp");
+        monitorService.execute(monitorApp);
 
-        //writeExecutorService.isShutdown();
     }
 
 

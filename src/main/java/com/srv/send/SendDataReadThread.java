@@ -2,11 +2,15 @@ package com.srv.send;
 
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.fileQueu.ReadHandler;
+import com.srv.util.PropertyService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 
 public class SendDataReadThread implements Runnable {
 
+    @Autowired
+    private PropertyService propertyService;
 
     private FileQueuMain fileQueuMain = null;
 
@@ -42,11 +46,13 @@ public class SendDataReadThread implements Runnable {
 
                 File file = readHandler.getFile();
 
-                String fileName = "/home/dextop/data/result/" + file.getName();
+                String fileName = propertyService.getString("file.result") + file.getName().replaceAll("S", "R");
 
                 fileQueuMain.getFileQueu().fileWrite(fileName, false, name, (String)readHandler.get());
 
-                Thread.sleep(100);
+                file.delete();
+
+                Thread.sleep(1000);
             }catch (Exception e){
                 e.printStackTrace();
             }
