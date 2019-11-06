@@ -35,30 +35,7 @@ public class FileQueu {
 
 
     public void fileWrite(String fileName, boolean gubun, String prifix, String str) throws IOException, InterruptedException {
-        /*
-        RandomAccessFile rf = null;
-        FileChannel channel = null;
 
-        File file = new File(fileName);
-        file.createNewFile();
-
-        rf = new RandomAccessFile(file, "rw");
-        channel = rf.getChannel();
-
-        MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, str.length());
-
-        map.position(0);
-        map.put(str.getBytes());
-
-        channel.close();
-        rf.close();
-
-        //System.out.println(fileName +" Create File...");
-
-        if(gubun) {
-            deque.put(file);
-        }
-        */
         File file = FileUtil.fileWrite(fileName, str);
 
 
@@ -73,28 +50,7 @@ public class FileQueu {
 
 
     public void fileRead(File file, ReadHandler readHandler) throws IOException{
-/*
-        RandomAccessFile rf = null;
-        FileChannel channel = null;
 
-        byte[] data = null;
-        if(file != null && file.isFile()) {
-            rf = new RandomAccessFile(file, "r");
-            channel = rf.getChannel();
-
-
-            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, (int) rf.length());
-
-            data = new byte[(int) rf.length()];
-            map.get(data);
-
-            channel.close();
-            rf.close();
-
-            readHandler.setHandler(data, file);
-
-        }
-*/
         byte[] data = FileUtil.fileRead(file);
         readHandler.setHandler(data, file);
     }
