@@ -15,7 +15,7 @@ public class App {
 
 
         int writeThreadCnt = 6;
-        int readThreadCnt = 6;
+        int readThreadCnt = 16;
 
         int monitorThreadCnt = 1;
 
