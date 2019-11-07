@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.srv.dao.MessageDAO">
+
+    <select id="selectTbMsg" resultType="com.srv.vo.TbMsgVO">
+        SELECT MSG_ID
+              ,TOKEN
+              ,TITLE
+              ,CONTENTS
+              ,STATUS
+              ,REG_DT
+          FROM TB_MSG
+        WHERE STATUS = '00'
+    </select>
+
+    <insert id="insertTbMsg" parameterType="com.srv.vo.TbMsgVO">
+        insert into tb_msg (msgId, token, title, contents, status, regDt)
+                    values (#{msgId}, #{token}, #{title}, #{contents}, #{status}, now())
+    </insert>
+
+    <delete id="deleteTbMsg" parameterType="com.srv.vo.TbMsgVO">
+        delete from tb_msg where msgId = #{msgId}
+    </delete>
+
+    <insert id="insertTbMsgSend" parameterType="com.srv.vo.TbMsgVO">
+        insert into tb_msg_send (sendDt, msgId, token, title, contents, status, regDt, resultDt)
+        values (#{msgId}, #{token}, #{title}, #{contents}, #{status}, #{regDt}, #{resultDt})
+
+    </insert>
+</mapper>

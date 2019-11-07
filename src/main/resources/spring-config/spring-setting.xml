@@ -11,11 +11,15 @@
 
     <context:component-scan base-package="com.srv"/>
 
-    <import resource="properties.xml"/>
+    <import resource="spring-properties.xml"/>
+
+    <import resource="spring-database.xml"/>
 
     <bean id="fcmSendProcess" class="com.srv.send.FcmSendProcess"/>
 
-    <bean id="fileQueuMain" class="com.srv.fileQueu.FileQueuMain"/>
+    <bean id="fileQueuMain" class="com.srv.fileQueu.FileQueuMain">
+        <constructor-arg ref="proPertiesService"/>
+    </bean>
 
     <bean id="writeThread" class="com.srv.send.SendDataWriteThread" scope="prototype" >
         <constructor-arg ref="fileQueuMain"/>
