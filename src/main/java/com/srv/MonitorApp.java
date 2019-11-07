@@ -49,31 +49,33 @@ public class MonitorApp implements Runnable{
                 File file = new File(fileName);
                 File[] isFiles = file.listFiles();
 
-                for (int i = 0; i < isFiles.length; i++) {
+                if(isFiles != null && isFiles.length > 0) {
+                    for (int i = 0; i < isFiles.length; i++) {
 
-                    if (isFiles[i] != null && isFiles[i].exists() && isFiles[i].getPath().indexOf("_monitor") < 0) {
+                        if (isFiles[i] != null && isFiles[i].exists() && isFiles[i].getPath().indexOf("_monitor") < 0) {
 
-                        //System.out.println(isFiles[i]);
+                            //System.out.println(isFiles[i]);
 
-                        byte[] data = FileUtil.fileRead(isFiles[i]);
+                            byte[] data = FileUtil.fileRead(isFiles[i]);
 
-                        monitorProcessFile(data);
+                            monitorProcessFile(data);
 
-                        String newFileName = DateUtil.getDate("yyyyMMdd")+"_monitor";
+                            String newFileName = DateUtil.getDate("yyyyMMdd") + "_monitor";
 
-                        String[] temp = isFiles[i].getAbsolutePath().split("/");
-                        temp[temp.length - 1] = newFileName;
+                            String[] temp = isFiles[i].getAbsolutePath().split("/");
+                            temp[temp.length - 1] = newFileName;
 
-                        String fName = "";
-                        for(int x = 0; x < temp.length; x++){
-                            fName += temp[x] + "/";
+                            String fName = "";
+                            for (int x = 0; x < temp.length; x++) {
+                                fName += temp[x] + "/";
+                            }
+
+                            fileWrite(new File(fName.substring(0, fName.length() - 1)));
+
+                            isFiles[i].delete();
+                        } else {
+                            isFiles[i] = null;
                         }
-
-                        fileWrite(new File(fName.substring(0, fName.length() - 1)));
-
-                        isFiles[i].delete();
-                    }else{
-                        isFiles[i] = null;
                     }
                 }
 

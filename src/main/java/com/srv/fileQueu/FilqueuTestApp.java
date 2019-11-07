@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FilqueuTestApp {
-
+/*
     public static void main(String[] args){
 
         int writeThreadCnt = 10;
@@ -32,7 +32,7 @@ public class FilqueuTestApp {
         }
 
     }
-
+*/
 
 /*
 

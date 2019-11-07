@@ -1,5 +1,8 @@
 package com.srv.fileQueu;
 
+import com.srv.util.PropertyService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,7 +23,7 @@ public class FileQueuMain {
     private File file;
     private File[] files;
 
-    public FileQueuMain(){
+    public FileQueuMain(PropertyService propertyService){
 
             deque = new LinkedBlockingDeque();
 
@@ -28,14 +31,26 @@ public class FileQueuMain {
             fileQueu = new FileQueu();
             fileQueu.setQueu(deque);
 
+            System.out.println( "path :::" + propertyService.getString("file.send"));
 
-            String path = "/home/dextop/data";
+            String path = propertyService.getString("file.send");//"/home/dextop/data";
+
             file = new File(path);
+
+            String dirName = file.getParent();
+            File dirFile = new File(dirName);
+            if(!dirFile.isDirectory()){
+                dirFile.mkdirs();
+            }
+
+
             files = file.listFiles();
 
 
             try {
-                setFileLoad();
+                if(files != null && files.length > 0) {
+                    setFileLoad();
+                }
                 System.out.println("File " + deque.size() +" load...");
 
             }catch(InterruptedException ex){
