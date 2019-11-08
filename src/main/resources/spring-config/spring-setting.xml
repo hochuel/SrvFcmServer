@@ -29,12 +29,16 @@
         <constructor-arg ref="fileQueuMain"/>
     </bean>
 
+    <bean id="resultThread" class="com.srv.result.ResultDataThread" scope="prototype">
+        <constructor-arg ref="fileQueuMain"/>
+    </bean>
+
 
     <bean id="atomicCustom" class="com.srv.util.AtomicCustom"/>
 
     <bean id="monitorApp" class="com.srv.MonitorApp"/>
 
-
+    <bean id="testDataInsert" class="com.srv.util.TestDataInsert"/>
 
 
 </beans>

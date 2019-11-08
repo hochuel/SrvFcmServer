@@ -3,29 +3,84 @@
 
 <mapper namespace="com.srv.dao.MessageDAO">
 
-    <select id="selectTbMsg" resultType="com.srv.vo.TbMsgVO">
+    <select id="selectTbMsg" parameterType="com.srv.vo.TbMsgVO" resultType="com.srv.vo.TbMsgVO">
         SELECT MSG_ID
               ,TOKEN
               ,TITLE
               ,CONTENTS
-              ,STATUS
+              ,MSG_STATUS
               ,REG_DT
           FROM TB_MSG
-        WHERE STATUS = '00'
+        WHERE MSG_STATUS = '01'
+          AND POL_KEY = #{polKey}
+        ORDER BY MSG_ID ASC
     </select>
 
-    <insert id="insertTbMsg" parameterType="com.srv.vo.TbMsgVO">
-        insert into tb_msg (msgId, token, title, contents, status, regDt)
-                    values (#{msgId}, #{token}, #{title}, #{contents}, #{status}, now())
-    </insert>
 
-    <delete id="deleteTbMsg" parameterType="com.srv.vo.TbMsgVO">
-        delete from tb_msg where msgId = #{msgId}
+    <update id="updateTbMsgPolKey" parameterType="com.srv.vo.TbMsgVO">
+
+        UPDATE TB_MSG SET POL_KEY = #{polKey}, MSG_STATUS = '01'
+                    WHERE MSG_ID IN (
+                                        SELECT *
+                                          FROM (
+                                                    SELECT MSG_ID
+                                                      FROM TB_MSG
+                                                     WHERE MSG_STATUS = '00'
+                                                  ORDER BY MSG_ID ASC LIMIT 100
+                                               ) TEMP
+                                    )
+
+    </update>
+
+    <update id="updateTbMsg" parameterType="java.util.Map">
+
+        <foreach collection="list" item="vo" separator=";">
+            UPDATE TB_MSG SET MSG_STATUS = '01' WHERE MSG_ID = #{vo.msgId}
+        </foreach>
+
+    </update>
+
+    <delete id="deleteTbMsg" parameterType="java.util.Map">
+        DELETE FROM TB_MSG WHERE
+        <foreach collection="list" item="vo" separator="OR">
+            MSG_ID = #{vo.msgId}
+        </foreach>
     </delete>
 
-    <insert id="insertTbMsgSend" parameterType="com.srv.vo.TbMsgVO">
-        insert into tb_msg_send (sendDt, msgId, token, title, contents, status, regDt, resultDt)
-        values (#{msgId}, #{token}, #{title}, #{contents}, #{status}, #{regDt}, #{resultDt})
+    <insert id="insertTbMsg" parameterType="java.util.Map">
 
+        INSERT INTO TB_MSG (MSG_ID, TOKEN, TITLE, CONTENTS, MSG_STATUS, REG_DT)
+                    VALUES
+        <foreach collection="list" item="vo" separator=" , " >
+        (#{vo.msgId}, #{vo.token}, #{vo.title}, #{vo.contents}, #{vo.msgStatus}, NOW())
+        </foreach>
     </insert>
+
+
+    <insert id="insertTbMsgSend" parameterType="java.util.Map">
+        INSERT INTO TB_MSG_SEND (MSG_ID, TOKEN, TITLE, CONTENTS, MSG_STATUS, REG_DT, RESULT_DT)
+        VALUES
+        <foreach collection="list" item="vo" separator=" , " >
+        (#{vo.msgId}, #{vo.token}, #{vo.title}, #{vo.contents}, '01', #{vo.regDt}, NULL)
+        </foreach>
+    </insert>
+
+    <update id="updateTbMsgSend" parameterType="java.util.Map">
+
+        <foreach collection="list" item="vo" separator=";">
+            UPDATE TB_MSG_SEND SET MSG_STATUS = #{vo.msgStatus}
+                                  ,RESULT_DT = NOW()
+                             WHERE MSG_ID = #{vo.msgId}
+        </foreach>
+    </update>
+
+
+
+
+    <update id="updateBatch2" parameterType="map">
+        UPDATE test_book SET originPrice = 0 WHERE bookID IN
+        <foreach item="testBook" index="index" collection="list" open="(" separator="," close=")">
+            #{testBook.bookID}
+        </foreach>
+    </update>
 </mapper>
