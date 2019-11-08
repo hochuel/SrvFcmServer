@@ -1,5 +1,6 @@
 package com.srv.fileQueu;
 
+import com.srv.util.FileUtil;
 import com.srv.util.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,54 +13,32 @@ public class FileQueuMain {
 
 
     private FileQueu fileQueu = null;
-    private LinkedBlockingDeque deque = null;
-
 
     private  int COMPARETYPE_NAME = 0;
     private  int COMPARETYPE_DATE = 1;
 
+    private PropertyService propertyService;
 
-
-    private File file;
-    private File[] files;
 
     public FileQueuMain(PropertyService propertyService){
 
-            deque = new LinkedBlockingDeque();
 
+        this.propertyService = propertyService;
 
-            fileQueu = new FileQueu();
-            fileQueu.setQueu(deque);
+        fileQueu = new FileQueu();
 
-            System.out.println( "path :::" + propertyService.getString("file.send"));
+        //System.out.println( "path :::" + propertyService.getString("file.send"));
 
-            String path = propertyService.getString("file.send");//"/home/dextop/data";
+        //String path = propertyService.getString("file.send");//"/home/dextop/data";
 
-            file = new File(path);
+        try {
+            setFileLoad();
+            setResultFileLoad();
+            //System.out.println("File " + deque.size() +" load...");
 
-            String dirName = file.getParent();
-            File dirFile = new File(dirName);
-            if(!dirFile.isDirectory()){
-                dirFile.mkdirs();
-            }
-
-
-            files = file.listFiles();
-
-
-            try {
-                if(files != null && files.length > 0) {
-                    setFileLoad();
-                }
-                System.out.println("File " + deque.size() +" load...");
-
-            }catch(InterruptedException ex){
-                ex.printStackTrace();
-            }
-
-    }
-    public LinkedBlockingDeque getDeque(){
-        return deque;
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     public FileQueu getFileQueu(){
@@ -68,16 +47,34 @@ public class FileQueuMain {
 
 
 
-    public void setFileLoad() throws InterruptedException{
-        File[] fileList = sortFileList(files, COMPARETYPE_DATE);
+    public void setFileLoad() throws Exception{
 
+        File[] files = FileUtil.getFileList(propertyService.getString("file.send"));
 
-        for (File tempFile : fileList) {
-            if (tempFile.isFile()) {
-                deque.put(tempFile);
+        if(files != null && files.length > 0) {
+            File[] fileList = sortFileList(files, COMPARETYPE_DATE);
+            for (File tempFile : fileList) {
+                if (tempFile.isFile()) {
+                    fileQueu.getDeque().put(tempFile);
+                }
             }
         }
     }
+
+    public void setResultFileLoad() throws Exception{
+        File[] files = FileUtil.getFileList(propertyService.getString("file.result"));
+
+        if(files != null && files.length > 0) {
+            File[] fileList = sortFileList(files, COMPARETYPE_DATE);
+            for (File tempFile : fileList) {
+                if (tempFile.isFile()) {
+                    fileQueu.getResutDeque().put(tempFile);
+                }
+            }
+        }
+    }
+
+
 
     public File[] sortFileList(File[] files, final int compareType) {
 

@@ -3,10 +3,6 @@ package com.srv.fileQueu;
 import com.srv.util.FileUtil;
 
 import java.io.*;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class FileQueu {
@@ -16,34 +12,53 @@ public class FileQueu {
 
     private ReadHandler readHandler = null;
     private LinkedBlockingDeque deque = null;
+    private LinkedBlockingDeque resutDeque = null;
+
+
+    public FileQueu(){
+        deque = new LinkedBlockingDeque();
+        resutDeque = new LinkedBlockingDeque();
+    }
+
+    public LinkedBlockingDeque getDeque() {
+        return deque;
+    }
+
+    public void setDeque(LinkedBlockingDeque deque) {
+        this.deque = deque;
+    }
+
+    public LinkedBlockingDeque getResutDeque() {
+        return resutDeque;
+    }
+
+    public void setResutDeque(LinkedBlockingDeque resutDeque) {
+        this.resutDeque = resutDeque;
+    }
 
     public static FileQueu getInstance(){
         return instance;
     }
 
-    public FileQueu(){
 
-    }
-
+/*
     public void setQueu(LinkedBlockingDeque deque){
         this.deque = deque;
 
     }
+*/
     public void setReadHandler(ReadHandler readHandler) {
         this.readHandler = readHandler;
     }
 
 
     public void fileWrite(String fileName, boolean gubun, String prifix, String str) throws IOException, InterruptedException {
-
         File file = FileUtil.fileWrite(fileName, str);
-
-
         if(gubun){
             deque.put(file);
+        }else{
+            resutDeque.put(file);
         }
-
-
     }
 
 
@@ -57,11 +72,18 @@ public class FileQueu {
 
 
 
-    public void dataHandler(ReadHandler readHandler){
+    public void dataHandler(ReadHandler readHandler, String gubun){
 
         Object result = null;
+        File file = null;
         try{
-            File file = (File)deque.take();
+
+            if("send".equals(gubun)) {
+                file = (File) deque.take();
+            }else if("result".equals(gubun)){
+                file = (File) resutDeque.take();
+            }
+
             if(file != null && file.isFile()) {
                 //System.out.println("File read file.getAbsolutePath() :" + file.getAbsolutePath());
                 fileRead(file, readHandler);
@@ -70,7 +92,6 @@ public class FileQueu {
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
 

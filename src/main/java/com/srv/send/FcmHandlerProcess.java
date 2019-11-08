@@ -58,11 +58,13 @@ public class FcmHandlerProcess implements ReadHandler {
                 try {
                     JSONParser jsonParser = new JSONParser();
                     JSONObject jsonObject = (JSONObject) jsonParser.parse(line);
+                    String msgId = jsonObject.get("msgId").toString();
                     String title = jsonObject.get("title").toString();
                     String body = jsonObject.get("body").toString();
                     String token = jsonObject.get("token").toString();
 
                     Message message = Message.builder()
+                            //.putData("msgId", msgId)
                             .setNotification(new Notification(title, body))
                             .setToken(token)
                             .build();
@@ -75,7 +77,7 @@ public class FcmHandlerProcess implements ReadHandler {
                     ex.printStackTrace();
                 }
             }
-            long startTime = System.currentTimeMillis();
+
 
             BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, "");
 
@@ -87,35 +89,12 @@ public class FcmHandlerProcess implements ReadHandler {
 
                 JSONObject jsonObject = (JSONObject)resultJsonList.get(index);
                 jsonObject.put("result", response.isSuccessful());
-
+                jsonObject.put("resultDt", System.currentTimeMillis());
                 index++;
 
                 resultStr += jsonObject.toJSONString()+"\r\n";
 
             }
-            long endTime = System.currentTimeMillis();
-
-            //final String str = file.getAbsolutePath() + ": cnt :" + index +": "+ (endTime - startTime) +"ms";
-
-            final JSONObject object = new JSONObject();
-            object.put("cnt", index);
-            object.put("time", (endTime - startTime));
-
-
-            final String monitorFileName = file.getAbsolutePath().replaceAll("/data/", "/data/monitor/");
-
-
-            new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        FileUtil.fileWrite(monitorFileName, object.toJSONString());
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-
 
             resultObj = resultStr;
             setFile(file);

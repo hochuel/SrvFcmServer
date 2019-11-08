@@ -9,7 +9,9 @@ import com.srv.vo.TbMsgVO;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SendDataWriteThread implements Runnable {
 
@@ -49,19 +51,49 @@ public class SendDataWriteThread implements Runnable {
             try {
 
                 String jsonString = "";
-                List<TbMsgVO> resultList = messageDAO.selectTbMsg();
-                if(resultList != null && resultList.size() > 0) {
 
-                    for (TbMsgVO vo : resultList) {
-                        JSONObject jsonObject = new JSONObject();
+                String polKey = name + System.currentTimeMillis() + String.format("%05d", atomicCustom.getIntData());
 
-                        jsonObject.put("title", vo.getTitle());
-                        jsonObject.put("body", vo.getContents());
-                        jsonObject.put("token", vo.getToken());
+                TbMsgVO param = new TbMsgVO();
+                param.setPolKey(polKey);
+                int cnt = messageDAO.updateTbMsgPolKey(param);
+                //System.out.println(polKey +":" + cnt);
+                //if(cnt > 0) {
+                    List<TbMsgVO> resultList = messageDAO.selectTbMsg(param);
+                    if (resultList != null && resultList.size() > 0) {
 
-                        jsonString += jsonObject.toJSONString() + "\r\n";
+                        for (TbMsgVO vo : resultList) {
+                            JSONObject jsonObject = new JSONObject();
+
+                            jsonObject.put("msgId", vo.getMsgId());
+                            jsonObject.put("title", vo.getTitle());
+                            jsonObject.put("body", vo.getContents());
+                            jsonObject.put("token", vo.getToken());
+                            jsonObject.put("sendDt", System.currentTimeMillis());
+
+                            jsonString += jsonObject.toJSONString() + "\r\n";
+
+                            //System.out.println(name + ":" + jsonString);
+
+                        }
+
+                        //System.out.println(name + ":" + jsonString);
+
+                        Map map = new HashMap();
+                        map.put("list", resultList);
+
+                      //  messageDAO.updateTbMsg(map);
+                        messageDAO.insertTbMsgSend(map);
+                        messageDAO.deleteTbMsg(map);
+
+
+                        String fileName = propertyService.getString("file.send") + "/" + name + "S" + DateUtil.getDate("yyyyMMddhhmmssSSS");
+                        fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
                     }
+               // }
 
+
+                Thread.sleep(1000);
 
 
                 /*
@@ -80,12 +112,6 @@ public class SendDataWriteThread implements Runnable {
 
                     jsonString += jsonObject.toJSONString()+"\r\n";
                 }*/
-
-                    String fileName = propertyService.getString("file.send") + "/" + name + "S" + DateUtil.getDate("yyyyMMddhhmmssSSS");
-                    fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
-                }
-                Thread.sleep(1000);
-
 
             }catch(Exception e){
                 e.printStackTrace();

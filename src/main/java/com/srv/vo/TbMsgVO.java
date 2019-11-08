@@ -8,8 +8,17 @@ public class TbMsgVO {
     private String contents;
     private String regDt;
     private String resultDt;
-    private String status;
+    private String msgStatus;
 
+    private String polKey;
+
+    public String getPolKey() {
+        return polKey;
+    }
+
+    public void setPolKey(String polKey) {
+        this.polKey = polKey;
+    }
 
     public String getSendDt() {
         return sendDt;
@@ -67,11 +76,11 @@ public class TbMsgVO {
         this.resultDt = resultDt;
     }
 
-    public String getStatus() {
-        return status;
+    public String getMsgStatus() {
+        return msgStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setMsgStatus(String msgStatus) {
+        this.msgStatus = msgStatus;
     }
 }

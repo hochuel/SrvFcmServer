@@ -8,6 +8,20 @@ import java.nio.channels.FileChannel;
 
 public class FileUtil {
 
+
+    public static File[] getFileList(String path){
+
+        File file = new File(path);
+
+        String dirName = file.getParent();
+        File dirFile = new File(dirName);
+        if(!dirFile.isDirectory()){
+            dirFile.mkdirs();
+        }
+
+        return file.listFiles();
+    }
+
     public static File fileWrite(String fileName, String str) throws IOException, InterruptedException {
         RandomAccessFile rf = null;
         FileChannel channel = null;

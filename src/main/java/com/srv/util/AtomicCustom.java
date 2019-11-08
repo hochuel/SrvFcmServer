@@ -12,6 +12,14 @@ public class AtomicCustom {
     }
 
     public int getIntData(){
-        return atomicInteger.incrementAndGet();
+
+        int index = atomicInteger.incrementAndGet();
+
+        if(index > 9000){
+            atomicInteger = new AtomicInteger(0);
+            index = atomicInteger.incrementAndGet();
+        }
+
+        return index;
     }
 }

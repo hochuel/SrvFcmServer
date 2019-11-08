@@ -25,7 +25,7 @@ public class FileReadThread implements Runnable {
 
                 ReadHandler readHandler = new ReadHandlerProcess();
 
-                fileQueuMain.getFileQueu().dataHandler(readHandler);
+                //fileQueuMain.getFileQueu().dataHandler(readHandler);
 
                 System.out.println(readHandler.get());
 

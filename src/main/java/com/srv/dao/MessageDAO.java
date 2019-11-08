@@ -3,14 +3,21 @@ package com.srv.dao;
 import com.srv.vo.TbMsgVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MessageDAO {
 
-    public List<TbMsgVO> selectTbMsg() throws Exception;
+    public List<TbMsgVO> selectTbMsg(TbMsgVO vo) throws Exception;
 
-    public int insertTbMsg(TbMsgVO paramVO) throws Exception;
+    public int updateTbMsgPolKey(TbMsgVO vo) throws Exception;
 
-    public int deleteTbMsg(TbMsgVO paramVO) throws Exception;
+    public int insertTbMsg(Map map) throws Exception;
 
-    public int insertTbMsgSend(TbMsgVO paramVO) throws Exception;
+    public int updateTbMsg(Map map) throws Exception;
+
+    public int deleteTbMsg(Map map) throws Exception;
+
+    public int insertTbMsgSend(Map map) throws Exception;
+
+    public int updateTbMsgSend(Map map) throws Exception;
 }

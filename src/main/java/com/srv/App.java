@@ -1,9 +1,11 @@
 package com.srv;
 
 import com.srv.fileQueu.FileQueuMain;
+import com.srv.result.ResultDataThread;
 import com.srv.send.FcmSendProcess;
 import com.srv.send.SendDataReadThread;
 import com.srv.send.SendDataWriteThread;
+import com.srv.util.TestDataInsert;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,16 +18,20 @@ public class App {
 
         int writeThreadCnt = 6;
         int readThreadCnt = 16;
+        int resultThreadCnt = 16;
 
         int monitorThreadCnt = 1;
 
         ExecutorService writeExecutorService = Executors.newFixedThreadPool(writeThreadCnt);
         ExecutorService readExecutorService = Executors.newFixedThreadPool(readThreadCnt);
 
+        ExecutorService resultExecutorService = Executors.newFixedThreadPool(resultThreadCnt);
+
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-config/spring-setting.xml");
 
 
         /*##################### Fcm App Reset ########################*/
+
         FcmSendProcess fcmSendProcess = (FcmSendProcess)context.getBean("fcmSendProcess");
         fcmSendProcess.appReset();
 
@@ -46,12 +52,22 @@ public class App {
             readExecutorService.execute(sendDataReadThreads[i]);
         }
 
+        ResultDataThread[] resultDataThreads = new ResultDataThread[resultThreadCnt];
+        for(int i = 0; i < resultThreadCnt; i++){
+            resultDataThreads[i] = (ResultDataThread)context.getBean("resultThread");
+            resultExecutorService.execute(resultDataThreads[i]);
+        }
+
         ExecutorService monitorService = Executors.newFixedThreadPool(monitorThreadCnt);
         MonitorApp monitorApp = (MonitorApp)context.getBean("monitorApp");
         monitorService.execute(monitorApp);
 
+
+
+/*
+        TestDataInsert testDataInsert = (TestDataInsert) context.getBean("testDataInsert");
+        testDataInsert.insertData();
+*/
+
     }
-
-
-
 }
