@@ -4,7 +4,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
-import org.json.simple.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +36,7 @@ public class FcmSend {
         InputStream serviceAccount = null;
         FirebaseOptions options = null;
         try {
-            ClassPathResource resource = new ClassPathResource("mypush-2680e-firebase-adminsdk-dgxzc-cb58899903.json");
+            ClassPathResource resource = new ClassPathResource("json/mypush-2680e-firebase-adminsdk-dgxzc-cb58899903.json");
             serviceAccount = resource.getInputStream();
             options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

@@ -24,7 +24,7 @@ public class TestDataInsert {
             Map map = new HashMap();
 
             List list = new ArrayList();
-            for(int i = 0; i < 100000; i++){
+            for(int i = 0; i < 100; i++){
                 TbMsgVO vo = new TbMsgVO();
 
                 int index = atomicCustom.getIntData();

@@ -12,7 +12,7 @@
         <bean name="proPertiesService" class="com.srv.util.PropertyService" destroy-method="destroy">
             <property name="extFileName">
                 <set>
-                    <value>classpath:/properties/resource.properties</value>
+                    <value>classpath:/properties/${spring.profiles.active}/resource.properties</value>
                 </set>
             </property>
         </bean>

@@ -10,7 +10,7 @@
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
-            <value>classpath:/properties/jdbc.properties</value>
+            <value>classpath:/properties/${spring.profiles.active}/jdbc.properties</value>
         </property>
     </bean>
 

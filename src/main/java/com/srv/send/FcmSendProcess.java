@@ -4,26 +4,36 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
-import com.srv.fileQueu.FileQueuMain;
+import com.srv.util.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.nio.channels.Channel;
 import java.util.List;
 
 public class FcmSendProcess {
+
+
+    @Autowired
+    private PropertyService propertyService;
 
     private FirebaseApp app01 = null;
 
     public void appReset(){
         InputStream serviceAccount = null;
+        //FileInputStream fileInputStream = null;
         FirebaseOptions options = null;
         try {
-            ClassPathResource resource = new ClassPathResource("mypush-2680e-firebase-adminsdk-dgxzc-cb58899903.json");
-            serviceAccount = resource.getInputStream();
+            //ClassPathResource resource = new ClassPathResource("json/mypush-2680e-firebase-adminsdk-dgxzc-cb58899903.json");
+
+            serviceAccount = new FileInputStream(propertyService.getString("json.path")+"/mypush-2680e-firebase-adminsdk-dgxzc-cb58899903.json");
+
+
+            //serviceAccount = resource.getInputStream();
             options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
@@ -32,6 +42,12 @@ public class FcmSendProcess {
             System.out.println("Firebase ServiceAccountKey FileNotFoundException" + e.getMessage());
         } catch (IOException e) {
             System.out.println("FirebaseOptions IOException" + e.getMessage());
+        }finally {
+            try {
+                serviceAccount.close();
+            }catch(IOException ex){
+                ex.printStackTrace();
+            }
         }
     }
 

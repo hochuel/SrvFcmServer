@@ -6,6 +6,8 @@ import com.srv.util.AtomicCustom;
 import com.srv.util.DateUtil;
 import com.srv.util.PropertyService;
 import com.srv.vo.TbMsgVO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SendDataWriteThread implements Runnable {
+
+    private Logger logger = LogManager.getLogger();
 
     @Autowired
     private PropertyService propertyService;
@@ -51,13 +55,13 @@ public class SendDataWriteThread implements Runnable {
             try {
 
                 String jsonString = "";
-
                 String polKey = name + System.currentTimeMillis() + String.format("%05d", atomicCustom.getIntData());
 
                 TbMsgVO param = new TbMsgVO();
                 param.setPolKey(polKey);
                 int cnt = messageDAO.updateTbMsgPolKey(param);
-                //System.out.println(polKey +":" + cnt);
+                //logger.info(polKey +" : CNT :" + cnt);
+
                 //if(cnt > 0) {
                     List<TbMsgVO> resultList = messageDAO.selectTbMsg(param);
                     if (resultList != null && resultList.size() > 0) {
