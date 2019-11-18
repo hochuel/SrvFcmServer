@@ -6,7 +6,10 @@ import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.fileQueu.ReadHandler;
+import com.srv.util.ErrorUtils;
 import com.srv.util.FileUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import java.util.List;
 
 public class FcmHandlerProcess implements ReadHandler {
 
+    private Logger logger = LogManager.getLogger("FcmHandlerProcess");
 
     private FcmSendProcess fcmSendProcess = null;
     private Object resultObj = null;
@@ -58,7 +62,7 @@ public class FcmHandlerProcess implements ReadHandler {
                 try {
                     JSONParser jsonParser = new JSONParser();
                     JSONObject jsonObject = (JSONObject) jsonParser.parse(line);
-                    String appName = jsonObject.get("appName").toString();
+                    String appName = jsonObject.get("appId").toString();
                     String msgId = jsonObject.get("msgId").toString();
                     String title = jsonObject.get("title").toString();
                     String body = jsonObject.get("body").toString();
@@ -81,18 +85,23 @@ public class FcmHandlerProcess implements ReadHandler {
 
 
             JSONObject appInfo = (JSONObject)resultJsonList.get(0);
-            BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, appInfo.get("appName").toString());
+            BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, appInfo.get("appId").toString());
 
             List<SendResponse> resultList = batchResponse.getResponses();
             int index = 0;
             String resultStr = "";
             for(SendResponse response : resultList){
                 JSONObject jsonObject = (JSONObject)resultJsonList.get(index);
+
+                logger.error(ErrorUtils.getError(response.getException()));
+
                 jsonObject.put("result", response.isSuccessful());
                 jsonObject.put("resultDt", System.currentTimeMillis());
                 index++;
 
                 resultStr += jsonObject.toJSONString()+"\r\n";
+
+                logger.info(resultStr);
 
             }
 

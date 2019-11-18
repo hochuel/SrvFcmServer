@@ -61,11 +61,11 @@ public class App {
             resultDataThreads[i] = (ResultDataThread)context.getBean("resultThread");
             resultExecutorService.execute(resultDataThreads[i]);
         }
-
+/*
         ExecutorService monitorService = Executors.newFixedThreadPool(monitorThreadCnt);
         MonitorApp monitorApp = (MonitorApp)context.getBean("monitorApp");
         monitorService.execute(monitorApp);
-
+*/
         logger.info(prifix + " SrvFcmServer Start ........");
 
 

@@ -2,10 +2,7 @@ package com.srv.send;
 
 import com.srv.dao.MessageDAO;
 import com.srv.fileQueu.FileQueuMain;
-import com.srv.util.AtomicCustom;
-import com.srv.util.Compare;
-import com.srv.util.DateUtil;
-import com.srv.util.PropertyService;
+import com.srv.util.*;
 import com.srv.vo.TbMsgVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +15,7 @@ import java.util.Map;
 
 public class SendDataWriteThread implements Runnable {
 
-    private Logger logger = LogManager.getLogger();
+    private Logger logger = LogManager.getLogger("SendDataWriteThread");
 
     @Autowired
     private PropertyService propertyService;
@@ -76,18 +73,23 @@ public class SendDataWriteThread implements Runnable {
                             for (TbMsgVO vo : compare.getResultList()) {
                                 JSONObject jsonObject = new JSONObject();
 
+
+                                String toDate = DateUtil.getDate("yyyyMMddHHmmss");
+
+                                logger.info("toDate ::" +toDate );
+
                                 jsonObject.put("msgId", vo.getMsgId());
                                 jsonObject.put("appId", vo.getAppId());
                                 jsonObject.put("title", vo.getTitle());
                                 jsonObject.put("body", vo.getContents());
                                 jsonObject.put("token", vo.getToken());
-                                jsonObject.put("sendDt", System.currentTimeMillis());
+                                jsonObject.put("sendDt", toDate);
 
                                 jsonString += jsonObject.toJSONString() + "\r\n";
                             }
 
                             Map map = new HashMap();
-                            map.put("list", resultList);
+                            map.put("list", compare.getResultList());
 
 
                             messageDAO.insertTbMsgSend(map);
@@ -123,6 +125,7 @@ public class SendDataWriteThread implements Runnable {
 
             }catch(Exception e){
                 e.printStackTrace();
+                logger.error(ErrorUtils.getError(e));
             }
         }
     }

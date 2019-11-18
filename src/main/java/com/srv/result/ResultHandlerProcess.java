@@ -50,8 +50,8 @@ public class ResultHandlerProcess implements ReadHandler {
                     String body = jsonObject.get("body").toString();
                     String token = jsonObject.get("token").toString();
 
-                    startTime = (Long) jsonObject.get("sendDt");
-                    endTime = (Long) jsonObject.get("resultDt");
+//                    startTime = (Long) jsonObject.get("sendDt");
+//                    endTime = (Long) jsonObject.get("resultDt");
 
 
                     TbMsgVO vo = new TbMsgVO();
@@ -68,7 +68,7 @@ public class ResultHandlerProcess implements ReadHandler {
 
 
             //final String str = file.getAbsolutePath() + ": cnt :" + index +": "+ (endTime - startTime) +"ms";
-
+/*
             final JSONObject object = new JSONObject();
             object.put("cnt", index);
             object.put("time", (endTime - startTime));
@@ -87,7 +87,7 @@ public class ResultHandlerProcess implements ReadHandler {
                     }
                 }
             }.start();
-
+*/
             setFile(file);
 
         }catch(IOException ex){
