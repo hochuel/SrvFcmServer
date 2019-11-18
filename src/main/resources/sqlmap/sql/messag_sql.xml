@@ -5,10 +5,12 @@
 
     <select id="selectTbMsg" parameterType="com.srv.vo.TbMsgVO" resultType="com.srv.vo.TbMsgVO">
         SELECT MSG_ID
+              ,APP_ID
               ,TOKEN
               ,TITLE
               ,CONTENTS
               ,MSG_STATUS
+              ,SEND_DT
               ,REG_DT
           FROM TB_MSG
         WHERE MSG_STATUS = '01'
@@ -19,14 +21,14 @@
 
     <update id="updateTbMsgPolKey" parameterType="com.srv.vo.TbMsgVO">
 
-        UPDATE TB_MSG SET POL_KEY = #{polKey}, MSG_STATUS = '01'
+        UPDATE TB_MSG SET POL_KEY = #{polKey}, MSG_STATUS = '01', SEND_DT = NOW()
                     WHERE MSG_ID IN (
                                         SELECT *
                                           FROM (
                                                     SELECT MSG_ID
                                                       FROM TB_MSG
                                                      WHERE MSG_STATUS = '00'
-                                                  ORDER BY MSG_ID ASC LIMIT 100
+                                                  ORDER BY MSG_ID ASC LIMIT 10000
                                                ) TEMP
                                     )
 
@@ -40,11 +42,9 @@
 
     </update>
 
-    <delete id="deleteTbMsg" parameterType="java.util.Map">
-        DELETE FROM TB_MSG WHERE
-        <foreach collection="list" item="vo" separator="OR">
-            MSG_ID = #{vo.msgId}
-        </foreach>
+    <delete id="deleteTbMsg" parameterType="com.srv.vo.TbMsgVO">
+        DELETE FROM TB_MSG WHERE POL_KEY = #{polKey}
+
     </delete>
 
     <insert id="insertTbMsg" parameterType="java.util.Map">
@@ -58,10 +58,9 @@
 
 
     <insert id="insertTbMsgSend" parameterType="java.util.Map">
-        INSERT INTO TB_MSG_SEND (MSG_ID, TOKEN, TITLE, CONTENTS, MSG_STATUS, REG_DT, RESULT_DT)
-        VALUES
-        <foreach collection="list" item="vo" separator=" , " >
-        (#{vo.msgId}, #{vo.token}, #{vo.title}, #{vo.contents}, '01', #{vo.regDt}, NULL)
+        INSERT INTO TB_MSG_SEND (MSG_ID, APP_ID, TOKEN, TITLE, CONTENTS, MSG_STATUS, REG_DT, RESULT_DT, SEND_DT) VALUES
+        <foreach collection="list" item="vo" separator="," >
+        (#{vo.msgId}, #{vo.appId}, #{vo.token}, #{vo.title}, #{vo.contents}, '01', #{vo.regDt}, NULL, DATE_FORMAT(#{vo.sendDt},'%Y%m%d%H%i%S') )
         </foreach>
     </insert>
 
@@ -74,13 +73,4 @@
         </foreach>
     </update>
 
-
-
-
-    <update id="updateBatch2" parameterType="map">
-        UPDATE test_book SET originPrice = 0 WHERE bookID IN
-        <foreach item="testBook" index="index" collection="list" open="(" separator="," close=")">
-            #{testBook.bookID}
-        </foreach>
-    </update>
 </mapper>

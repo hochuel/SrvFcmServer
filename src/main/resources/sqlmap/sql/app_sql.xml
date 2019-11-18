@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.srv.dao.AppDAO">
+
+    <sql id="selectTbApp">
+        SELECT APP_ID
+        ,APP_NAME
+        ,APP_JSON
+        FROM TB_APP_MST
+    </sql>
+
+    <select id="selectTbAppList" parameterType="com.srv.vo.TbAppVO" resultType="com.srv.vo.TbAppVO">
+        <include refid="selectTbApp"/>
+    </select>
+
+    <select id="selectTbAppSingle" parameterType="com.srv.vo.TbAppVO" resultType="com.srv.vo.TbAppVO">
+        <include refid="selectTbApp"/>
+        <if test='appId != null and appId !=""'>
+            WHERE APP_ID = #{appId}
+        </if>
+    </select>
+
+    <insert id="insertTbAppMst" parameterType="com.srv.vo.TbAppVO">
+
+        INSERT INTO TB_APP_MST(APP_ID, APP_NAME, APP_JSON) VALUE (#{appId}, #{appName}, #{appJson})
+    </insert>
+
+    <update id="updateTbAppMst" parameterType="com.srv.vo.TbAppVO">
+        UPDATE TB_APP_MST SET APP_NAME = #{appName}
+                             ,APP_JSON = #{appJson}
+                        WHERE APP_ID = #{appId}
+    </update>
+
+    <delete id="deleteTbAppMst" parameterType="com.srv.vo.TbAppVO">
+        DELETE FROM TB_APP_MST WHERE APP_ID = #{appId}
+    </delete>
+
+
+
+</mapper>

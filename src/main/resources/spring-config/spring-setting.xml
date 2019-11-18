@@ -15,7 +15,7 @@
 
     <import resource="spring-database.xml"/>
 
-    <bean id="fcmSendProcess" class="com.srv.send.FcmSendProcess"/>
+    <bean id="fcmSendProcess" class="com.srv.send.FcmSendProcess" init-method="initApp"/>
 
     <bean id="fileQueuMain" class="com.srv.fileQueu.FileQueuMain">
         <constructor-arg ref="proPertiesService"/>
