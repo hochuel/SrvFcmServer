@@ -3,6 +3,7 @@ package com.srv.send;
 import com.srv.dao.MessageDAO;
 import com.srv.fileQueu.FileQueuMain;
 import com.srv.util.AtomicCustom;
+import com.srv.util.Compare;
 import com.srv.util.DateUtil;
 import com.srv.util.PropertyService;
 import com.srv.vo.TbMsgVO;
@@ -66,33 +67,36 @@ public class SendDataWriteThread implements Runnable {
                     List<TbMsgVO> resultList = messageDAO.selectTbMsg(param);
                     if (resultList != null && resultList.size() > 0) {
 
-                        for (TbMsgVO vo : resultList) {
-                            JSONObject jsonObject = new JSONObject();
+                        Compare compare = new Compare();
+                        compare.setDataList(resultList);
+                        while(compare.getDataList().size() > 0) {
+                            compare.compare((TbMsgVO)compare.getDataList().get(0));
 
-                            jsonObject.put("msgId", vo.getMsgId());
-                            jsonObject.put("title", vo.getTitle());
-                            jsonObject.put("body", vo.getContents());
-                            jsonObject.put("token", vo.getToken());
-                            jsonObject.put("sendDt", System.currentTimeMillis());
 
-                            jsonString += jsonObject.toJSONString() + "\r\n";
+                            for (TbMsgVO vo : compare.getResultList()) {
+                                JSONObject jsonObject = new JSONObject();
 
-                            //System.out.println(name + ":" + jsonString);
+                                jsonObject.put("msgId", vo.getMsgId());
+                                jsonObject.put("appId", vo.getAppId());
+                                jsonObject.put("title", vo.getTitle());
+                                jsonObject.put("body", vo.getContents());
+                                jsonObject.put("token", vo.getToken());
+                                jsonObject.put("sendDt", System.currentTimeMillis());
 
+                                jsonString += jsonObject.toJSONString() + "\r\n";
+                            }
+
+                            Map map = new HashMap();
+                            map.put("list", resultList);
+
+
+                            messageDAO.insertTbMsgSend(map);
+                            messageDAO.deleteTbMsg(param);
+
+
+                            String fileName = propertyService.getString("file.send") + "/" + name + "S" + DateUtil.getDate("yyyyMMddhhmmssSSS");
+                            fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
                         }
-
-                        //System.out.println(name + ":" + jsonString);
-
-                        Map map = new HashMap();
-                        map.put("list", resultList);
-
-                      //  messageDAO.updateTbMsg(map);
-                        messageDAO.insertTbMsgSend(map);
-                        messageDAO.deleteTbMsg(map);
-
-
-                        String fileName = propertyService.getString("file.send") + "/" + name + "S" + DateUtil.getDate("yyyyMMddhhmmssSSS");
-                        fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
                     }
                // }
 

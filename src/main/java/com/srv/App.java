@@ -36,7 +36,7 @@ public class App {
         /*##################### Fcm App Reset ########################*/
 
         FcmSendProcess fcmSendProcess = (FcmSendProcess)context.getBean("fcmSendProcess");
-        fcmSendProcess.appReset();
+        //fcmSendProcess.appReset();
 
         String prifix = System.getProperty("ServerPrifix");
 

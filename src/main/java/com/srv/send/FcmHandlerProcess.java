@@ -58,6 +58,7 @@ public class FcmHandlerProcess implements ReadHandler {
                 try {
                     JSONParser jsonParser = new JSONParser();
                     JSONObject jsonObject = (JSONObject) jsonParser.parse(line);
+                    String appName = jsonObject.get("appName").toString();
                     String msgId = jsonObject.get("msgId").toString();
                     String title = jsonObject.get("title").toString();
                     String body = jsonObject.get("body").toString();
@@ -79,14 +80,13 @@ public class FcmHandlerProcess implements ReadHandler {
             }
 
 
-            BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, "");
+            JSONObject appInfo = (JSONObject)resultJsonList.get(0);
+            BatchResponse batchResponse = fcmSendProcess.sendAllMessage(list, appInfo.get("appName").toString());
 
             List<SendResponse> resultList = batchResponse.getResponses();
             int index = 0;
             String resultStr = "";
             for(SendResponse response : resultList){
-                //System.out.println(response.isSuccessful() + ":" + response.getMessageId());
-
                 JSONObject jsonObject = (JSONObject)resultJsonList.get(index);
                 jsonObject.put("result", response.isSuccessful());
                 jsonObject.put("resultDt", System.currentTimeMillis());

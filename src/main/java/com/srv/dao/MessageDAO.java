@@ -15,7 +15,7 @@ public interface MessageDAO {
 
     public int updateTbMsg(Map map) throws Exception;
 
-    public int deleteTbMsg(Map map) throws Exception;
+    public int deleteTbMsg(TbMsgVO vo) throws Exception;
 
     public int insertTbMsgSend(Map map) throws Exception;
 
