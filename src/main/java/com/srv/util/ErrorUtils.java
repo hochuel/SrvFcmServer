@@ -5,9 +5,13 @@ import java.io.StringWriter;
 
 public class ErrorUtils {
     public static String getError(Exception e){
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
+        if(e != null) {
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter));
 
-        return stringWriter.toString();
+            return stringWriter.toString();
+        }
+
+        return "";
     }
 }
