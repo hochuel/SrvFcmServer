@@ -41,10 +41,11 @@ public class FileUtil {
         rf = new RandomAccessFile(file, "rw");
         channel = rf.getChannel();
 
-        MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, str.length());
+        MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, str.getBytes("utf-8").length);
 
         map.position(0);
-        map.put(str.getBytes());
+        map.put(str.getBytes("utf-8"));
+
 
         channel.close();
         rf.close();
