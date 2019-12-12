@@ -26,16 +26,9 @@ public class FileQueuMain {
         this.propertyService = propertyService;
 
         fileQueu = new FileQueu();
-
-        //System.out.println( "path :::" + propertyService.getString("file.send"));
-
-        //String path = propertyService.getString("file.send");//"/home/dextop/data";
-
         try {
             setFileLoad();
             setResultFileLoad();
-            //System.out.println("File " + deque.size() +" load...");
-
         }catch(Exception ex){
             ex.printStackTrace();
         }
