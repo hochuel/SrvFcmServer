@@ -97,7 +97,7 @@ public class SendDataWriteThread implements Runnable {
 
 
                             String fileName = propertyService.getString("file.send") + "/" + name + "S" + DateUtil.getDate("yyyyMMddhhmmssSSS");
-                            fileQueuMain.getFileQueu().fileWrite(fileName, true, name, jsonString);
+                            fileQueuMain.getFileQueu().sendFileWrite(fileName, jsonString);
                         }
                     }
                // }

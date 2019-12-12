@@ -62,6 +62,14 @@ public class FileQueu {
     }
 
 
+    public void sendFileWrite(String fileName, String str) throws Exception{
+        fileWrite(fileName, true, "", str);
+    }
+
+    public void resultFileWrite(String fileName, String str) throws Exception{
+        fileWrite(fileName, false, "", str);
+    }
+
 
 
     public void fileRead(File file, ReadHandler readHandler) throws IOException{

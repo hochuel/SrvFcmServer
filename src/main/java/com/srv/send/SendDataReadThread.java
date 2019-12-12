@@ -47,7 +47,7 @@ public class SendDataReadThread implements Runnable {
                 File file = readHandler.getFile();
 
                 String fileName = propertyService.getString("file.result") + file.getName().replaceAll("S", "R");
-                fileQueuMain.getFileQueu().fileWrite(fileName, false, name, (String)readHandler.get());
+                fileQueuMain.getFileQueu().resultFileWrite(fileName, (String)readHandler.get());
 
                 file.delete();
 
